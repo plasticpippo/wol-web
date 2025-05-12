@@ -87,7 +87,7 @@ def create_user(username, password):
 
 def check_first_run():
     """Checks if this is the first time the application is run."""
-    return query_db('SELECT COUNT(*) FROM user', one=True)[0] == 0
+    return query_db('SELECT COUNT(*) FROM user', one=True) == 0
 
 # --- End Authentication ---
 
