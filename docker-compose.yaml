@@ -1,7 +1,7 @@
 services:
   wol-service:
     build: .
-#    network_mode: host
+    network_mode: host
     environment:
       TARGET_MAC_ADDRESSES: ${TARGET_MAC_ADDRESSES} #  <MAC1>,<MAC2>,<MAC3>
     volumes:

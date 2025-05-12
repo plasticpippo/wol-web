@@ -50,7 +50,6 @@ def query_db(query, args=(), one=False):
     else:
         return [dict(zip([column[0] for column in cur.description], row)) for row in rv]
 
-
 def commit_db():
     """Commits changes to the database."""
     db = get_db()
