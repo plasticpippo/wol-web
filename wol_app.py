@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, abort, redirect, url_for, Response, session
+from flask import Flask, request, render_template, abort, redirect, url_for, Response, session, g
 from wakeonlan import send_magic_packet
 import os
 from functools import wraps
@@ -19,14 +19,14 @@ DATABASE_FILE = '/data/wol.db'  # Path to the SQLite database file
 # --- Database Functions ---
 def get_db():
     """Opens a database connection if there isn't one yet for the current application context."""
-    if not hasattr(g, 'sqlite_db'):
+    if 'sqlite_db' not in g:
         g.sqlite_db = sqlite3.connect(DATABASE_FILE)
     return g.sqlite_db
 
 @app.teardown_appcontext
 def close_db(error):
     """Closes the database again at the end of the request or the application."""
-    if hasattr(g, 'sqlite_db'):
+    if 'sqlite_db' in g:
         g.sqlite_db.close()
 
 def init_db():
@@ -157,4 +157,4 @@ if __name__ == '__main__':
     # Ensure the database exists
     with app.app_context():
         init_db()  # Initialize the database
-    app.run(host='0.0.0.0', port=8888, debug=True)
+    app.run(host='0.0.0.0', port=8888, debug=True) # make sure this is 8888
