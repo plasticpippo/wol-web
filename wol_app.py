@@ -39,11 +39,13 @@ def init_db():
 
 def query_db(query, args=(), one=False):
     """Queries the database and returns the results."""
-    db = get_db()
-    cur = db.execute(query, args)
+    cur = get_db().execute(query, args)
     rv = cur.fetchall()
     cur.close()
-    return (rv[0] if rv else None) if one else rv
+    if one:
+        return dict(zip([column[0] for column in cur.description], rv[0])) if rv else None
+    else:
+        return [dict(zip([column[0] for column in cur.description], row)) for row in rv]
 
 def commit_db():
     """Commits changes to the database."""
