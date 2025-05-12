@@ -43,9 +43,13 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     if one:
-        return dict(zip([column[0] for column in cur.description], rv[0])) if rv else None
+        if 'COUNT(*)' in query:
+            return rv[0][0] if rv else 0  # Return the count directly
+        else:
+            return dict(zip([column[0] for column in cur.description], rv[0])) if rv else None
     else:
         return [dict(zip([column[0] for column in cur.description], row)) for row in rv]
+
 
 def commit_db():
     """Commits changes to the database."""
