@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, abort, redirect, url_for, Response, session, g
+from flask import Flask, request, render_template, abort, redirect, url_for, Response, session, g, current_app
 from wakeonlan import send_magic_packet
 import os
 from functools import wraps
@@ -31,21 +31,24 @@ def close_db(error):
 
 def init_db():
     """Initializes the database with the user table."""
-    db = get_db()
-    with app.open_resource('schema.sql', mode='r') as f:
-        db.cursor().executescript(f.read())
-    db.commit()
+    with current_app.app_context(): # Wrap the database operations
+        db = get_db()
+        with app.open_resource('schema.sql', mode='r') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
 
 def query_db(query, args=(), one=False):
     """Queries the database and returns the results."""
-    cur = get_db().execute(query, args)
+    db = get_db()
+    cur = db.execute(query, args)
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
 def commit_db():
     """Commits changes to the database."""
-    get_db().commit()
+    db = get_db()
+    db.commit()
 # --- End Database Functions ---
 
 # --- Authentication ---
