@@ -1,0 +1,9 @@
+---
+services:
+  wol-service:
+    build: .
+    image: wol-web
+    network_mode: host
+    ports:
+      - '8888:8888'
+    restart: unless-stopped
