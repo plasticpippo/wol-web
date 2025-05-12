@@ -2,8 +2,28 @@
 services:
   wol-service:
     build: .
-    image: wol-web
+    image: wol-web-interface
     network_mode: host
-    ports:
-      - '8888:8888'
+    environment:
+      TARGET_MAC_ADDRESSES: ${TARGET_MAC_ADDRESSES} #  <MAC1>,<MAC2>,<MAC3>
+      WOL_USERNAME: ${WOL_USERNAME}
+      WOL_PASSWORD: ${WOL_PASSWORD}
     restart: unless-stopped
+
+  # Optional Caddy for TLS
+  #caddy:
+  #  image: caddy:2
+  #  network_mode: host
+  #  ports:
+  #    - "80:80"   # HTTP
+  #    - "443:443"  # HTTPS
+  #  volumes:
+  #    - ./Caddyfile:/etc/caddy/Caddyfile
+  #    - caddy_data:/data
+  #    - caddy_config:/config
+  #  depends_on:
+  #    - wol-service
+
+#volumes:
+#  caddy_data:
+#  caddy_config:
